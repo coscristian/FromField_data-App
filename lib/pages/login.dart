@@ -5,13 +5,8 @@ import '../widgets/password.dart';
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
 
-  //var _controller = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
-    bool _obscureText = true;
-    String _password;
-
     return Scaffold(
       //backgroundColor: Colors.grey,
       body: SingleChildScrollView(
