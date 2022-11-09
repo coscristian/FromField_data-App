@@ -11,7 +11,7 @@ class PasswordWidget extends StatefulWidget {
 class PasswordWidgetState extends State<PasswordWidget> {
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
       obscureText: widget.obscureText,
       decoration: InputDecoration(
         labelText: const Text(
@@ -19,7 +19,8 @@ class PasswordWidgetState extends State<PasswordWidget> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ).data,
         suffixIcon: IconButton(
-          icon: Icon(widget.obscureText ? Icons.visibility : Icons.visibility_off),
+          icon: Icon(
+              widget.obscureText ? Icons.visibility : Icons.visibility_off),
           onPressed: () {
             setState(() {
               widget.obscureText = !widget.obscureText;
@@ -27,6 +28,20 @@ class PasswordWidgetState extends State<PasswordWidget> {
           },
         ),
       ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return "Required Field";
+        }
+
+        if (!value.contains(RegExp(r'[A-Z]'), 0)) {
+          return "Need at least UpperCase letter";
+        }
+
+        if (value.length < 7) {
+          return "Minimun 7 characters";
+        }
+        return null;
+      },
     );
   }
 }
