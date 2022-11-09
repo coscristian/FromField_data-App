@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:from_field_data/pages/inicio.dart';
 
-import '../widgets/password.dart';
+import '../widgets/email_field.dart';
+import '../widgets/password_field.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -8,7 +10,7 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //backgroundColor: Colors.grey,
+      //backgroundColor: const Color(0xEDE6F0),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -17,72 +19,110 @@ class LoginPage extends StatelessWidget {
               const SizedBox(
                 height: 50,
               ),
-              Image.asset(
-                "assets/images/logoLogin.png",
-                width: 300,
-                height: 300,
-              ),
+              _image(),
               const SizedBox(
                 height: 30,
               ),
-              TextField(
-                obscureText: false,
-                decoration: InputDecoration(
-                  labelText: const Text(
-                    "Username or Email",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ).data,
-                  hintText: "example@email.com",
-                ),
-              ),
+              _form(context),
               const SizedBox(
-                height: 30,
+                height: 15,
               ),
-              PasswordWidget(obscureText: true),
-              const SizedBox(
-                height: 30,
-              ),
-              SizedBox(
-                width: 230,
-                child: ElevatedButton(
-                  style: const ButtonStyle(
-                    backgroundColor:
-                        MaterialStatePropertyAll<Color>(Colors.brown),
-                  ),
-                  onPressed: () {},
-                  child: const Text("Login"),
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              const Text("Register a new Account"),
-              const SizedBox(
-                height: 10,
-              ),
-              const Text("Forgot my password"),
-              const SizedBox(
-                height: 30,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  SizedBox(
-                    width: 50,
-                    height: 50,
-                    child: Image.asset("assets/images/google.png"),
-                  ),
-                  SizedBox(
-                    width: 50,
-                    height: 50,
-                    child: Image.asset("assets/images/facebook.png"),
-                  ),
-                ],
-              ),
+              _options(),
+              _alternativeLogin(),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _image() {
+    return Image.asset(
+      "assets/images/logoLogin.png",
+      width: 300,
+      height: 300,
+    );
+  }
+
+  Widget _form(BuildContext context) {
+    final formKey = GlobalKey<FormState>();
+
+    return Form(
+      key: formKey,
+      child: Column(
+        children: <Widget>[
+          EmailFieldWidget(
+              labelText: "Username or Email", hintText: "example@email.com"),
+          const SizedBox(
+            height: 30,
+          ),
+          PasswordWidget(obscureText: true),
+          const SizedBox(
+            height: 30,
+          ),
+          _loginButton(formKey, context),
+        ],
+      ),
+    );
+  }
+
+  Widget _loginButton(GlobalKey<FormState> formKey, BuildContext context) {
+    return SizedBox(
+      width: 230,
+      child: ElevatedButton(
+        style: const ButtonStyle(
+          backgroundColor: MaterialStatePropertyAll<Color>(Colors.brown),
+        ),
+        child: const Text("Login"),
+        onPressed: () {
+          if (formKey.currentState!.validate()) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const MainPage(),
+              ),
+            );
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _options() {
+    return Column(
+      children: [
+        TextButton(
+          style: TextButton.styleFrom(foregroundColor: Colors.brown),
+          child: const Text("Register a new Account"),
+          onPressed: () {},
+        ),
+        TextButton(
+          style: TextButton.styleFrom(foregroundColor: Colors.brown),
+          child: const Text("Forgot my password"),
+          onPressed: () {},
+        ),
+        const SizedBox(
+          height: 8,
+        ),
+      ],
+    );
+  }
+
+  Widget _alternativeLogin() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        IconButton(
+          icon: Image.asset("assets/images/google.png"),
+          iconSize: 30,
+          onPressed: () {},
+        ),
+        IconButton(
+          icon: Image.asset("assets/images/facebook.png"),
+          iconSize: 30,
+          onPressed: () {},
+        ),
+      ],
     );
   }
 }
