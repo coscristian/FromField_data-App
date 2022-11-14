@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "From Field Data",
-      home: RegisterPage(),
+      home: LoginPage(),
     );
   }
 }

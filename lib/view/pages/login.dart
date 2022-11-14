@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:from_field_data/view/pages/register.dart';
 
 import '../../controller/login.dart';
 import '../../controller/request/login.dart';
+import '../../controller/request/register.dart';
 import '../widgets/email_field.dart';
 import '../widgets/password_field.dart';
 import 'inicio.dart';
@@ -9,10 +11,12 @@ import 'inicio.dart';
 class LoginPage extends StatelessWidget {
   late LoginController _controller;
   late LoginRequest _loginRequest;
+  late PasswordLoginWidget _passwordLoginWidget;
 
   LoginPage({super.key}) {
     _controller = LoginController();
     _loginRequest = LoginRequest();
+    _passwordLoginWidget = PasswordLoginWidget(obscureText: true);
   }
 
   @override
@@ -35,7 +39,7 @@ class LoginPage extends StatelessWidget {
               const SizedBox(
                 height: 15,
               ),
-              _options(),
+              _options(context),
               _alternativeLogin(),
             ],
           ),
@@ -63,7 +67,7 @@ class LoginPage extends StatelessWidget {
           const SizedBox(
             height: 30,
           ),
-          PasswordWidget(obscureText: true),
+          _passwordLoginWidget,
           const SizedBox(
             height: 30,
           ),
@@ -102,8 +106,6 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  
-
   Widget _loginButton(GlobalKey<FormState> formKey, BuildContext context) {
     return SizedBox(
       width: 230,
@@ -115,7 +117,7 @@ class LoginPage extends StatelessWidget {
         onPressed: () {
           if (formKey.currentState!.validate()) {
             formKey.currentState!.save();
-
+            _loginRequest.password = _passwordLoginWidget.loginRequest.password;
             try {
               var name = _controller.validateEmailPassword(_loginRequest);
               Navigator.pushReplacement(
@@ -135,13 +137,20 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  Widget _options() {
+  Widget _options(BuildContext context) {
     return Column(
       children: [
         TextButton(
           style: TextButton.styleFrom(foregroundColor: Colors.brown),
           child: const Text("Register a new Account"),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => RegisterPage(),
+              ),
+            );
+          },
         ),
         TextButton(
           style: TextButton.styleFrom(foregroundColor: Colors.brown),
@@ -170,6 +179,59 @@ class LoginPage extends StatelessWidget {
           onPressed: () {},
         ),
       ],
+    );
+  }
+}
+
+class PasswordLoginWidget extends StatefulWidget {
+  bool obscureText;
+  late LoginRequest loginRequest;
+
+  PasswordLoginWidget({super.key, required this.obscureText}) {
+    loginRequest = LoginRequest();
+  }
+
+  @override
+  State<PasswordLoginWidget> createState() => PasswordWidgetState();
+}
+
+class PasswordWidgetState extends State<PasswordLoginWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      obscureText: widget.obscureText,
+      decoration: InputDecoration(
+        labelText: const Text(
+          "Password",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ).data,
+        suffixIcon: IconButton(
+          icon: Icon(
+              widget.obscureText ? Icons.visibility : Icons.visibility_off),
+          onPressed: () {
+            setState(() {
+              widget.obscureText = !widget.obscureText;
+            });
+          },
+        ),
+      ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return "Required Field";
+        }
+
+        if (!value.contains(RegExp(r'[A-Z]'), 0)) {
+          return "Need at least UpperCase letter";
+        }
+
+        if (value.length < 7) {
+          return "Minimun 7 characters";
+        }
+        return null;
+      },
+      onSaved: (value) {
+        widget.loginRequest.password = value!;
+      },
     );
   }
 }

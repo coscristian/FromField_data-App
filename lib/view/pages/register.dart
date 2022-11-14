@@ -7,17 +7,20 @@ import '../../controller/request/register.dart';
 import '../../model/entity/user_type_account.dart';
 import '../widgets/email_field.dart';
 import '../widgets/password_field.dart';
+import '../widgets/password_register_field.dart';
 import 'inicio.dart';
 
 class RegisterPage extends StatelessWidget {
   late RegisterController _controller;
   late RegisterRequest _registerRequest;
-  late PasswordWidget _passwordWidget;
+  late PasswordRegisterWidget _passworRegisterdWidget;
+  late UserAccountTypeWidget _userAccountTypeWidget;
 
   RegisterPage({super.key}) {
     _controller = RegisterController();
     _registerRequest = RegisterRequest();
-    _passwordWidget = PasswordWidget(obscureText: true);
+    _passworRegisterdWidget = PasswordRegisterWidget(obscureText: true);
+    _userAccountTypeWidget = UserAccountTypeWidget();
   }
 
   @override
@@ -59,11 +62,12 @@ class RegisterPage extends StatelessWidget {
           const SizedBox(
             height: 35,
           ),
-          _passwordWidget,
+          //_passwordWidget,
+          _passworRegisterdWidget,
           const SizedBox(
             height: 35,
           ),
-          const UserAccountTypeWidget(),
+          _userAccountTypeWidget,
           const SizedBox(
             height: 35,
           ),
@@ -156,6 +160,11 @@ class RegisterPage extends StatelessWidget {
             // Check if the checkbox(Terms and conditions) is selected
             if (_TermsConditionsWidget.isChecked!) {
               formKey.currentState!.save();
+              // Asign the corresponding info from an external widget
+              _registerRequest.password =
+                  _passworRegisterdWidget.registerRequest.password;
+              _registerRequest.typeAcoount =
+                  _userAccountTypeWidget.registerRequest.typeAcoount;
               try {
                 _controller.validateUser(_registerRequest);
                 Navigator.pushReplacement(
@@ -189,7 +198,11 @@ class RegisterPage extends StatelessWidget {
 }
 
 class UserAccountTypeWidget extends StatefulWidget {
-  const UserAccountTypeWidget({super.key});
+  late RegisterRequest registerRequest;
+
+  UserAccountTypeWidget({super.key}) {
+    registerRequest = RegisterRequest();
+  }
 
   @override
   State<UserAccountTypeWidget> createState() => _UserAccountTypeWidget();
@@ -218,6 +231,7 @@ class _UserAccountTypeWidget extends State<UserAccountTypeWidget> {
           onChanged: (UserTypeAccount? value) {
             setState(() {
               _typeAccount = value;
+              widget.registerRequest.typeAcoount = value;
             });
           },
         ),
@@ -229,6 +243,7 @@ class _UserAccountTypeWidget extends State<UserAccountTypeWidget> {
           onChanged: (UserTypeAccount? value) {
             setState(() {
               _typeAccount = value;
+              widget.registerRequest.typeAcoount = value;
             });
           },
         ),
@@ -240,6 +255,7 @@ class _UserAccountTypeWidget extends State<UserAccountTypeWidget> {
           onChanged: (UserTypeAccount? value) {
             setState(() {
               _typeAccount = value;
+              widget.registerRequest.typeAcoount = value;
             });
           },
         ),
