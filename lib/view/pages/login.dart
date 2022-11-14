@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:from_field_data/pages/inicio.dart';
+import 'package:from_field_data/view/pages/inicio.dart';
 
 import '../widgets/email_field.dart';
 import '../widgets/password_field.dart';
