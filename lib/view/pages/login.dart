@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:from_field_data/view/pages/inicio.dart';
 
+import '../../controller/login.dart';
+import '../../controller/request/login.dart';
 import '../widgets/email_field.dart';
 import '../widgets/password_field.dart';
+import 'inicio.dart';
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+  late LoginController _controller;
+  late LoginRequest _loginRequest;
+
+  LoginPage({super.key}) {
+    _controller = LoginController();
+    _loginRequest = LoginRequest();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,8 +59,7 @@ class LoginPage extends StatelessWidget {
       key: formKey,
       child: Column(
         children: <Widget>[
-          EmailFieldWidget(
-              labelText: "Username or Email", hintText: "example@email.com"),
+          _emailField(),
           const SizedBox(
             height: 30,
           ),
@@ -66,6 +73,37 @@ class LoginPage extends StatelessWidget {
     );
   }
 
+  Widget _emailField() {
+    return TextFormField(
+      obscureText: false,
+      keyboardType: TextInputType.emailAddress,
+      decoration: InputDecoration(
+        labelText: const Text(
+          "Email",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ).data,
+        hintText: "Your email address",
+      ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return "Required Field";
+        }
+        if (!value.contains(".") || !value.contains("@")) {
+          return "Invalid Email";
+        }
+        if (value.length < 5) {
+          return "Minimun 5 characters";
+        }
+        return null;
+      },
+      onSaved: (value) {
+        _loginRequest.email = value!;
+      },
+    );
+  }
+
+  
+
   Widget _loginButton(GlobalKey<FormState> formKey, BuildContext context) {
     return SizedBox(
       width: 230,
@@ -76,12 +114,21 @@ class LoginPage extends StatelessWidget {
         child: const Text("Login"),
         onPressed: () {
           if (formKey.currentState!.validate()) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const MainPage(),
-              ),
-            );
+            formKey.currentState!.save();
+
+            try {
+              var name = _controller.validateEmailPassword(_loginRequest);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      MainPage(name: name, email: _loginRequest.email),
+                ),
+              );
+            } catch (e) {
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(SnackBar(content: Text(e.toString())));
+            }
           }
         },
       ),

@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 
+import '../../controller/request/login.dart';
+
 class EmailFieldWidget extends StatelessWidget {
   String labelText;
   String hintText;
+  late LoginRequest loginRequest;
 
-  EmailFieldWidget({
-    super.key,
-    required this.labelText,
-    required this.hintText,
-  });
+  EmailFieldWidget(
+      {super.key, required this.labelText, required this.hintText}) {
+    loginRequest = LoginRequest();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +35,9 @@ class EmailFieldWidget extends StatelessWidget {
           return "Minimun 5 characters";
         }
         return null;
+      },
+      onSaved: (value) {
+        loginRequest.email = value!;
       },
     );
   }

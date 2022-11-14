@@ -1,11 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:from_field_data/view/widgets/password_field.dart';
 
+import '../../controller/login.dart';
+import '../../controller/register.dart';
+import '../../controller/request/login.dart';
+import '../../controller/request/register.dart';
+import '../../model/entity/user_type_account.dart';
 import '../widgets/email_field.dart';
+import '../widgets/password_field.dart';
 import 'inicio.dart';
 
 class RegisterPage extends StatelessWidget {
-  const RegisterPage({super.key});
+  late RegisterController _controller;
+  late RegisterRequest _registerRequest;
+  late PasswordWidget _passwordWidget;
+
+  RegisterPage({super.key}) {
+    _controller = RegisterController();
+    _registerRequest = RegisterRequest();
+    _passwordWidget = PasswordWidget(obscureText: true);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,14 +55,11 @@ class RegisterPage extends StatelessWidget {
           const SizedBox(
             height: 35,
           ),
-          EmailFieldWidget(
-            labelText: "Email",
-            hintText: "Your email address",
-          ),
+          _emailField(),
           const SizedBox(
             height: 35,
           ),
-          PasswordWidget(obscureText: true),
+          _passwordWidget,
           const SizedBox(
             height: 35,
           ),
@@ -87,6 +97,9 @@ class RegisterPage extends StatelessWidget {
         }
         return null;
       },
+      onSaved: (value) {
+        _registerRequest.name = value!;
+      },
     );
   }
 
@@ -97,6 +110,35 @@ class RegisterPage extends StatelessWidget {
         fontSize: 25,
         fontWeight: FontWeight.bold,
       ),
+    );
+  }
+
+  Widget _emailField() {
+    return TextFormField(
+      obscureText: false,
+      keyboardType: TextInputType.emailAddress,
+      decoration: InputDecoration(
+        labelText: const Text(
+          "Email",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ).data,
+        hintText: "Your email address",
+      ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return "Required Field";
+        }
+        if (!value.contains(".") || !value.contains("@")) {
+          return "Invalid Email";
+        }
+        if (value.length < 5) {
+          return "Minimun 5 characters";
+        }
+        return null;
+      },
+      onSaved: (value) {
+        _registerRequest.email = value!;
+      },
     );
   }
 
@@ -113,12 +155,27 @@ class RegisterPage extends StatelessWidget {
           if (formKey.currentState!.validate()) {
             // Check if the checkbox(Terms and conditions) is selected
             if (_TermsConditionsWidget.isChecked!) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const MainPage(),
-                ),
-              );
+              formKey.currentState!.save();
+              try {
+                print("Hola1");
+                _controller.validateUser(_registerRequest);
+                print("Hola2");
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MainPage(
+                        name: _registerRequest.name,
+                        email: _registerRequest.email),
+                  ),
+                );
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content:
+                        Text("There is a user registered with that Email!!"),
+                  ),
+                );
+              }
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
@@ -132,8 +189,6 @@ class RegisterPage extends StatelessWidget {
     );
   }
 }
-
-enum UserTypeAccount { institucional, empresa, personal }
 
 class UserAccountTypeWidget extends StatefulWidget {
   const UserAccountTypeWidget({super.key});

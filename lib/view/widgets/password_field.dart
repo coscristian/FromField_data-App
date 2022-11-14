@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 
+import '../../controller/request/login.dart';
+
 class PasswordWidget extends StatefulWidget {
   bool obscureText;
-  PasswordWidget({super.key, required this.obscureText});
+  late LoginRequest _loginRequest;
+
+  PasswordWidget({super.key, required this.obscureText}) {
+    _loginRequest = LoginRequest();
+  }
 
   @override
   State<PasswordWidget> createState() => PasswordWidgetState();
@@ -41,6 +47,9 @@ class PasswordWidgetState extends State<PasswordWidget> {
           return "Minimun 7 characters";
         }
         return null;
+      },
+      onSaved: (value) {
+        widget._loginRequest.password = value!;
       },
     );
   }

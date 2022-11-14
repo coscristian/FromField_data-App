@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 class MainPage extends StatelessWidget {
-  const MainPage({super.key});
+  final String name;
+  final String email;
+
+  const MainPage({super.key, required this.name, required this.email});
 
   @override
   Widget build(BuildContext context) {
