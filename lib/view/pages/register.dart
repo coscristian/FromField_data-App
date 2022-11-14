@@ -157,9 +157,7 @@ class RegisterPage extends StatelessWidget {
             if (_TermsConditionsWidget.isChecked!) {
               formKey.currentState!.save();
               try {
-                print("Hola1");
                 _controller.validateUser(_registerRequest);
-                print("Hola2");
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(

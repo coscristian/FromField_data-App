@@ -38,6 +38,5 @@ class UserRepository {
 
   void addUser(UserEntity user) {
     _users[user.email!] = user;
-    print(_users);
   }
 }
