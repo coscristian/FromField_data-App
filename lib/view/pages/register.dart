@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 
-import '../../controller/login.dart';
 import '../../controller/register.dart';
-import '../../controller/request/login.dart';
 import '../../controller/request/register.dart';
 import '../../model/entity/user_type_account.dart';
 import '../widgets/email_field.dart';
 import '../widgets/password_field.dart';
 import '../widgets/password_register_field.dart';
+import '../widgets/terms_conditions.dart';
+import '../widgets/user_account_type.dart';
 import 'inicio.dart';
 
 class RegisterPage extends StatelessWidget {
   late RegisterController _controller;
   late RegisterRequest _registerRequest;
-  late PasswordRegisterWidget _passworRegisterdWidget;
   late UserAccountTypeWidget _userAccountTypeWidget;
+  late TermsConditionsWidget _termsConditionsWidget;
 
   RegisterPage({super.key}) {
     _controller = RegisterController();
     _registerRequest = RegisterRequest();
-    _passworRegisterdWidget = PasswordRegisterWidget(obscureText: true);
     _userAccountTypeWidget = UserAccountTypeWidget();
+    _termsConditionsWidget = TermsConditionsWidget();
   }
 
   @override
@@ -58,12 +58,22 @@ class RegisterPage extends StatelessWidget {
           const SizedBox(
             height: 35,
           ),
-          _emailField(),
+          EmailFieldWidget(
+            labelText: "Email",
+            hintText: "Your email address",
+            save: (newValue) {
+              _registerRequest.email = newValue!;
+            },
+          ),
           const SizedBox(
             height: 35,
           ),
-          //_passwordWidget,
-          _passworRegisterdWidget,
+          PasswordWidget(
+            obscureText: true,
+            save: (newValue) {
+              _registerRequest.password = newValue!;
+            },
+          ),
           const SizedBox(
             height: 35,
           ),
@@ -71,7 +81,7 @@ class RegisterPage extends StatelessWidget {
           const SizedBox(
             height: 35,
           ),
-          const TermsConditionsWidget(),
+          _termsConditionsWidget,
           const SizedBox(
             height: 25,
           ),
@@ -117,35 +127,6 @@ class RegisterPage extends StatelessWidget {
     );
   }
 
-  Widget _emailField() {
-    return TextFormField(
-      obscureText: false,
-      keyboardType: TextInputType.emailAddress,
-      decoration: InputDecoration(
-        labelText: const Text(
-          "Email",
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ).data,
-        hintText: "Your email address",
-      ),
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return "Required Field";
-        }
-        if (!value.contains(".") || !value.contains("@")) {
-          return "Invalid Email";
-        }
-        if (value.length < 5) {
-          return "Minimun 5 characters";
-        }
-        return null;
-      },
-      onSaved: (value) {
-        _registerRequest.email = value!;
-      },
-    );
-  }
-
   Widget _registerButton(GlobalKey<FormState> formKey, BuildContext context) {
     return SizedBox(
       width: 230,
@@ -158,13 +139,12 @@ class RegisterPage extends StatelessWidget {
           // Check if the textFormFiels are correct
           if (formKey.currentState!.validate()) {
             // Check if the checkbox(Terms and conditions) is selected
-            if (_TermsConditionsWidget.isChecked!) {
-              formKey.currentState!.save();
+            if (_termsConditionsWidget.isChecked) {
               // Asign the corresponding info from an external widget
-              _registerRequest.password =
-                  _passworRegisterdWidget.registerRequest.password;
               _registerRequest.typeAcoount =
                   _userAccountTypeWidget.registerRequest.typeAcoount;
+              // Save the form info
+              formKey.currentState!.save();
               try {
                 _controller.validateUser(_registerRequest);
                 Navigator.pushReplacement(
@@ -193,106 +173,6 @@ class RegisterPage extends StatelessWidget {
           }
         },
       ),
-    );
-  }
-}
-
-class UserAccountTypeWidget extends StatefulWidget {
-  late RegisterRequest registerRequest;
-
-  UserAccountTypeWidget({super.key}) {
-    registerRequest = RegisterRequest();
-  }
-
-  @override
-  State<UserAccountTypeWidget> createState() => _UserAccountTypeWidget();
-}
-
-class _UserAccountTypeWidget extends State<UserAccountTypeWidget> {
-  UserTypeAccount? _typeAccount = UserTypeAccount.institucional;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        const Text(
-          "Type",
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        RadioListTile(
-          contentPadding: EdgeInsets.zero,
-          title: const Text("Institucional"),
-          value: UserTypeAccount.institucional,
-          groupValue: _typeAccount,
-          onChanged: (UserTypeAccount? value) {
-            setState(() {
-              _typeAccount = value;
-              widget.registerRequest.typeAcoount = value;
-            });
-          },
-        ),
-        RadioListTile(
-          contentPadding: EdgeInsets.zero,
-          title: const Text("Empresa"),
-          value: UserTypeAccount.empresa,
-          groupValue: _typeAccount,
-          onChanged: (UserTypeAccount? value) {
-            setState(() {
-              _typeAccount = value;
-              widget.registerRequest.typeAcoount = value;
-            });
-          },
-        ),
-        RadioListTile(
-          contentPadding: EdgeInsets.zero,
-          title: const Text("Personal"),
-          value: UserTypeAccount.personal,
-          groupValue: _typeAccount,
-          onChanged: (UserTypeAccount? value) {
-            setState(() {
-              _typeAccount = value;
-              widget.registerRequest.typeAcoount = value;
-            });
-          },
-        ),
-      ],
-    );
-  }
-}
-
-class TermsConditionsWidget extends StatefulWidget {
-  const TermsConditionsWidget({super.key});
-
-  @override
-  State<StatefulWidget> createState() => _TermsConditionsWidget();
-}
-
-class _TermsConditionsWidget extends State<TermsConditionsWidget> {
-  static bool? isChecked = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        SizedBox(
-          width: 30.0,
-          child: Checkbox(
-            value: isChecked,
-            onChanged: (bool? value) {
-              setState(() {
-                isChecked = value;
-              });
-            },
-          ),
-        ),
-        const Text(
-          "Estoy de acuerdo con los términos de\nservicios y politicas de privaciad.",
-        ),
-      ],
     );
   }
 }

@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import '../../controller/request/login.dart';
 
 class PasswordWidget extends StatefulWidget {
+  
   bool obscureText;
-  late LoginRequest _loginRequest;
+  
+  FormFieldSetter<String> save;
 
-  PasswordWidget({super.key, required this.obscureText}) {
-    _loginRequest = LoginRequest();
-  }
+  PasswordWidget({super.key, required this.obscureText, required this.save});
 
   @override
   State<PasswordWidget> createState() => PasswordWidgetState();
@@ -48,9 +48,7 @@ class PasswordWidgetState extends State<PasswordWidget> {
         }
         return null;
       },
-      onSaved: (value) {
-        widget._loginRequest.password = value!;
-      },
+      onSaved: widget.save,
     );
   }
 }

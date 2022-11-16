@@ -3,7 +3,6 @@ import 'package:from_field_data/view/pages/register.dart';
 
 import '../../controller/login.dart';
 import '../../controller/request/login.dart';
-import '../../controller/request/register.dart';
 import '../widgets/email_field.dart';
 import '../widgets/password_field.dart';
 import 'inicio.dart';
@@ -11,12 +10,12 @@ import 'inicio.dart';
 class LoginPage extends StatelessWidget {
   late LoginController _controller;
   late LoginRequest _loginRequest;
-  late PasswordLoginWidget _passwordLoginWidget;
+  //late PasswordWidget _passwordLoginWidget;
 
   LoginPage({super.key}) {
     _controller = LoginController();
     _loginRequest = LoginRequest();
-    _passwordLoginWidget = PasswordLoginWidget(obscureText: true);
+    //_passwordLoginWidget = PasswordLoginWidget(obscureText: true);
   }
 
   @override
@@ -63,46 +62,29 @@ class LoginPage extends StatelessWidget {
       key: formKey,
       child: Column(
         children: <Widget>[
-          _emailField(),
+          //_emailField(),
+          EmailFieldWidget(
+            labelText: "Email",
+            hintText: "Your email address",
+            save: (value) {
+              _loginRequest.email = value!;
+            },
+          ),
           const SizedBox(
             height: 30,
           ),
-          _passwordLoginWidget,
+          PasswordWidget(
+            obscureText: true,
+            save: (value) {
+              _loginRequest.password = value!;
+            },
+          ),
           const SizedBox(
             height: 30,
           ),
           _loginButton(formKey, context),
         ],
       ),
-    );
-  }
-
-  Widget _emailField() {
-    return TextFormField(
-      obscureText: false,
-      keyboardType: TextInputType.emailAddress,
-      decoration: InputDecoration(
-        labelText: const Text(
-          "Email",
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ).data,
-        hintText: "Your email address",
-      ),
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return "Required Field";
-        }
-        if (!value.contains(".") || !value.contains("@")) {
-          return "Invalid Email";
-        }
-        if (value.length < 5) {
-          return "Minimun 5 characters";
-        }
-        return null;
-      },
-      onSaved: (value) {
-        _loginRequest.email = value!;
-      },
     );
   }
 
@@ -117,7 +99,6 @@ class LoginPage extends StatelessWidget {
         onPressed: () {
           if (formKey.currentState!.validate()) {
             formKey.currentState!.save();
-            _loginRequest.password = _passwordLoginWidget.loginRequest.password;
             try {
               var name = _controller.validateEmailPassword(_loginRequest);
               Navigator.pushReplacement(
@@ -179,59 +160,6 @@ class LoginPage extends StatelessWidget {
           onPressed: () {},
         ),
       ],
-    );
-  }
-}
-
-class PasswordLoginWidget extends StatefulWidget {
-  bool obscureText;
-  late LoginRequest loginRequest;
-
-  PasswordLoginWidget({super.key, required this.obscureText}) {
-    loginRequest = LoginRequest();
-  }
-
-  @override
-  State<PasswordLoginWidget> createState() => PasswordWidgetState();
-}
-
-class PasswordWidgetState extends State<PasswordLoginWidget> {
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      obscureText: widget.obscureText,
-      decoration: InputDecoration(
-        labelText: const Text(
-          "Password",
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ).data,
-        suffixIcon: IconButton(
-          icon: Icon(
-              widget.obscureText ? Icons.visibility : Icons.visibility_off),
-          onPressed: () {
-            setState(() {
-              widget.obscureText = !widget.obscureText;
-            });
-          },
-        ),
-      ),
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return "Required Field";
-        }
-
-        if (!value.contains(RegExp(r'[A-Z]'), 0)) {
-          return "Need at least UpperCase letter";
-        }
-
-        if (value.length < 7) {
-          return "Minimun 7 characters";
-        }
-        return null;
-      },
-      onSaved: (value) {
-        widget.loginRequest.password = value!;
-      },
     );
   }
 }

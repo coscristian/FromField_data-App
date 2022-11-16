@@ -6,8 +6,13 @@ import '../../controller/request/login.dart';
 class PasswordRegisterWidget extends StatefulWidget {
   bool obscureText;
   late RegisterRequest registerRequest;
+  //Function save;
 
-  PasswordRegisterWidget({super.key, required this.obscureText}) {
+  PasswordRegisterWidget({
+    super.key,
+    required this.obscureText,
+    /*required this.save*/
+  }) {
     registerRequest = RegisterRequest();
   }
 
@@ -49,6 +54,8 @@ class PasswordWidgetState extends State<PasswordRegisterWidget> {
         }
         return null;
       },
+      //onSaved: widget.save(),
+      
       onSaved: (value) {
         widget.registerRequest.password = value!;
       },

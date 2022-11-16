@@ -5,11 +5,15 @@ import '../../controller/request/login.dart';
 class EmailFieldWidget extends StatelessWidget {
   String labelText;
   String hintText;
-  late LoginRequest loginRequest;
+  //late LoginRequest loginRequest;
+  FormFieldValidator<String> save;
 
   EmailFieldWidget(
-      {super.key, required this.labelText, required this.hintText}) {
-    loginRequest = LoginRequest();
+      {super.key,
+      required this.labelText,
+      required this.hintText,
+      required this.save}) {
+    //loginRequest = LoginRequest();
   }
 
   @override
@@ -36,9 +40,7 @@ class EmailFieldWidget extends StatelessWidget {
         }
         return null;
       },
-      onSaved: (value) {
-        loginRequest.email = value!;
-      },
+      onSaved: save,
     );
   }
 }
