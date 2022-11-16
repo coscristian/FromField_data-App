@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../controller/register.dart';
 import '../../controller/request/register.dart';
-import '../../model/entity/user_type_account.dart';
 import '../widgets/email_field.dart';
 import '../widgets/password_field.dart';
-import '../widgets/password_register_field.dart';
 import '../widgets/terms_conditions.dart';
 import '../widgets/user_account_type.dart';
 import 'inicio.dart';
