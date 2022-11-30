@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:from_field_data/controller/login.dart';
-import 'package:from_field_data/view/pages/login.dart';
 
+import '../../controller/login.dart';
 import '../../controller/register.dart';
 import '../../controller/request/register.dart';
-import '../widgets/email_field.dart';
 import '../widgets/password_field.dart';
 import '../widgets/terms_conditions.dart';
+import '../widgets/text_field.dart';
 import '../widgets/user_account_type.dart';
 import 'inicio.dart';
 
@@ -49,6 +48,35 @@ class RegisterPage extends StatelessWidget {
     );
   }
 
+  String? validateEmailField(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Required Field";
+    }
+    if (!value.contains(".") || !value.contains("@")) {
+      return "Invalid Email";
+    }
+    if (value.length < 5) {
+      return "Minimun 5 characters";
+    }
+    return null;
+  }
+
+  Widget _emailField() {
+    return TextFieldWidget(
+      obscureText: false,
+      decoration: InputDecoration(
+        labelText: const Text(
+          "Email",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ).data,
+        hintText: "Your email Address",
+      ),
+      keyboardType: TextInputType.emailAddress,
+      validator: validateEmailField,
+      save: (value) => _registerRequest.email = value!,
+    );
+  }
+
   Widget _form(BuildContext context) {
     final formKey = GlobalKey<FormState>();
 
@@ -60,13 +88,7 @@ class RegisterPage extends StatelessWidget {
           const SizedBox(
             height: 35,
           ),
-          EmailFieldWidget(
-            labelText: "Email",
-            hintText: "Your email address",
-            save: (newValue) {
-              _registerRequest.email = newValue!;
-            },
-          ),
+          _emailField(),
           const SizedBox(
             height: 35,
           ),
@@ -93,10 +115,19 @@ class RegisterPage extends StatelessWidget {
     );
   }
 
+  String? validateName(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Required Field";
+    }
+    if (value.length < 5) {
+      return "Minimun 5 characters";
+    }
+    return null;
+  }
+
   Widget _userNameField() {
-    return TextFormField(
+    return TextFieldWidget(
       obscureText: false,
-      keyboardType: TextInputType.name,
       decoration: InputDecoration(
         labelText: const Text(
           "Name",
@@ -104,18 +135,9 @@ class RegisterPage extends StatelessWidget {
         ).data,
         hintText: "Username",
       ),
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return "Required Field";
-        }
-        if (value.length < 5) {
-          return "Minimun 5 characters";
-        }
-        return null;
-      },
-      onSaved: (value) {
-        _registerRequest.name = value!;
-      },
+      keyboardType: TextInputType.name,
+      validator: validateName,
+      save: (value) => _registerRequest.name = value!,
     );
   }
 

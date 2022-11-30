@@ -3,8 +3,8 @@ import 'package:from_field_data/view/pages/register.dart';
 
 import '../../controller/login.dart';
 import '../../controller/request/login.dart';
-import '../widgets/email_field.dart';
 import '../widgets/password_field.dart';
+import '../widgets/text_field.dart';
 import 'inicio.dart';
 
 class LoginPage extends StatelessWidget {
@@ -55,6 +55,35 @@ class LoginPage extends StatelessWidget {
     );
   }
 
+  String? validateEmailField(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Required Field";
+    }
+    if (!value.contains(".") || !value.contains("@")) {
+      return "Invalid Email";
+    }
+    if (value.length < 5) {
+      return "Minimun 5 characters";
+    }
+    return null;
+  }
+
+  Widget _emailField() {
+    return TextFieldWidget(
+      obscureText: false,
+      decoration: InputDecoration(
+        labelText: const Text(
+          "Email",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ).data,
+        hintText: "Your email Address",
+      ),
+      keyboardType: TextInputType.emailAddress,
+      validator: validateEmailField,
+      save: (value) => _loginRequest.email = value!,
+    );
+  }
+
   Widget _form(BuildContext context) {
     final formKey = GlobalKey<FormState>();
 
@@ -62,14 +91,7 @@ class LoginPage extends StatelessWidget {
       key: formKey,
       child: Column(
         children: <Widget>[
-          //_emailField(),
-          EmailFieldWidget(
-            labelText: "Email",
-            hintText: "Your email address",
-            save: (value) {
-              _loginRequest.email = value!;
-            },
-          ),
+          _emailField(),
           const SizedBox(
             height: 30,
           ),
