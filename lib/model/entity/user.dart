@@ -4,12 +4,17 @@ class UserEntity {
   late String? name;
   late String? email;
   late String? password;
-  late UserTypeAccount? typeAcoount;
+  late UserTypeAccount? typeAccount;
 
   UserEntity({
     this.name,
     this.email,
     this.password,
-    this.typeAcoount,
+    this.typeAccount,
   });
+
+  @override
+  String toString() {
+    return "UserEntity {$name, $email, $password, $typeAccount}";
+  }
 }

@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import '../../controller/request/login.dart';
 
 class PasswordWidget extends StatefulWidget {
-  
   bool obscureText;
-  
+
   FormFieldSetter<String> save;
 
   PasswordWidget({super.key, required this.obscureText, required this.save});

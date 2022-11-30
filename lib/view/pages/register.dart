@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:from_field_data/controller/login.dart';
+import 'package:from_field_data/view/pages/login.dart';
 
 import '../../controller/register.dart';
 import '../../controller/request/register.dart';
@@ -10,11 +12,13 @@ import 'inicio.dart';
 
 class RegisterPage extends StatelessWidget {
   late RegisterController _controller;
+  late LoginController _loginController;
   late RegisterRequest _registerRequest;
   late UserAccountTypeWidget _userAccountTypeWidget;
   late TermsConditionsWidget _termsConditionsWidget;
 
   RegisterPage({super.key}) {
+    _loginController = LoginController();
     _controller = RegisterController();
     _registerRequest = RegisterRequest();
     _userAccountTypeWidget = UserAccountTypeWidget();
@@ -125,6 +129,49 @@ class RegisterPage extends StatelessWidget {
     );
   }
 
+  void _registerUser(BuildContext context) async {
+    try {
+      // Register User on Firebase.
+      // Como registerNewUser retorna un Future(Promesa) debo usar los métodos
+      //    * .then() para que se ejecute la función dada si el retorno de el Future es exitoso
+      //    * .onError() para que se ejecute la función dada si el retorno del Future es con error
+
+      await _controller.registerNewUser(_registerRequest);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Usuario Registrado Correctamente.")),
+      );
+      // Despues de mostrar el mensaje, devuelvase a la pagina anterior
+      Navigator.pop(context);
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(error.toString()),
+        ),
+      );
+    }
+  }
+
+  void _validateUser(GlobalKey<FormState> formKey, BuildContext context) {
+    // Check if the textFormFiels are correct
+    if (formKey.currentState!.validate()) {
+      // Check if the checkbox(Terms and conditions) is selected
+      if (_termsConditionsWidget.isChecked) {
+        // Asign the corresponding info from an external widget
+        _registerRequest.typeAccount =
+            _userAccountTypeWidget.registerRequest.typeAccount;
+        // Save the form info
+        formKey.currentState!.save();
+        _registerUser(context);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("You have to agree Terms and Conditions."),
+          ),
+        );
+      }
+    }
+  }
+
   Widget _registerButton(GlobalKey<FormState> formKey, BuildContext context) {
     return SizedBox(
       width: 230,
@@ -134,41 +181,7 @@ class RegisterPage extends StatelessWidget {
         ),
         child: const Text("Create Accont"),
         onPressed: () {
-          // Check if the textFormFiels are correct
-          if (formKey.currentState!.validate()) {
-            // Check if the checkbox(Terms and conditions) is selected
-            if (_termsConditionsWidget.isChecked) {
-              // Asign the corresponding info from an external widget
-              _registerRequest.typeAcoount =
-                  _userAccountTypeWidget.registerRequest.typeAcoount;
-              // Save the form info
-              formKey.currentState!.save();
-              try {
-                _controller.validateUser(_registerRequest);
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MainPage(
-                        name: _registerRequest.name,
-                        email: _registerRequest.email),
-                  ),
-                );
-              } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content:
-                        Text("There is a user registered with that Email!!"),
-                  ),
-                );
-              }
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text("You have to agree Terms and Conditions."),
-                ),
-              );
-            }
-          }
+          _validateUser(formKey, context);
         },
       ),
     );

@@ -9,13 +9,13 @@ class UserRepository {
       name: "Cristian Quesada Cossio",
       email: "crisquesadaco@gmail.com",
       password: "Cris_123",
-      typeAcoount: UserTypeAccount.institucional,
+      typeAccount: UserTypeAccount.institucional,
     );
     _users['andres@gmail.com'] = UserEntity(
       name: "Andres Loaiza Perez",
       email: "andres@gmail.com",
       password: "Andres12345",
-      typeAcoount: UserTypeAccount.institucional,
+      typeAccount: UserTypeAccount.institucional,
     );
   }
 
@@ -28,6 +28,7 @@ class UserRepository {
     return user;
   }
 
+/*
   UserEntity? findByEmailToRegister(String email) {
     var user = _users[email];
     if (user != null) {
@@ -35,8 +36,12 @@ class UserRepository {
     }
     return null;
   }
-
+*/
   void addUser(UserEntity user) {
     _users[user.email!] = user;
+  }
+
+  void save(UserEntity userEntity) {
+    print(userEntity);
   }
 }

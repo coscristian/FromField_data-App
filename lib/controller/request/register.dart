@@ -4,5 +4,10 @@ class RegisterRequest {
   late String email;
   late String name;
   late String password;
-  late UserTypeAccount? typeAcoount;
+  late UserTypeAccount? typeAccount;
+
+  @override
+  String toString() {
+    return "$name, $email, $password, $typeAccount";
+  }
 }

@@ -9,6 +9,7 @@ class UserAccountTypeWidget extends StatefulWidget {
 
   UserAccountTypeWidget({super.key}) {
     registerRequest = RegisterRequest();
+    registerRequest.typeAccount = typeAccount;
   }
 
   @override
@@ -36,7 +37,7 @@ class _UserAccountTypeWidget extends State<UserAccountTypeWidget> {
           onChanged: (UserTypeAccount? value) {
             setState(() {
               widget.typeAccount = value!;
-              widget.registerRequest.typeAcoount = value;
+              widget.registerRequest.typeAccount = value;
             });
           },
         ),
@@ -48,7 +49,7 @@ class _UserAccountTypeWidget extends State<UserAccountTypeWidget> {
           onChanged: (UserTypeAccount? value) {
             setState(() {
               widget.typeAccount = value!;
-              widget.registerRequest.typeAcoount = value;
+              widget.registerRequest.typeAccount = value;
             });
           },
         ),
@@ -60,7 +61,7 @@ class _UserAccountTypeWidget extends State<UserAccountTypeWidget> {
           onChanged: (UserTypeAccount? value) {
             setState(() {
               widget.typeAccount = value!;
-              widget.registerRequest.typeAcoount = value;
+              widget.registerRequest.typeAccount = value;
             });
           },
         ),

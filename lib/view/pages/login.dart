@@ -96,16 +96,16 @@ class LoginPage extends StatelessWidget {
           backgroundColor: MaterialStatePropertyAll<Color>(Colors.brown),
         ),
         child: const Text("Login"),
-        onPressed: () {
+        onPressed: () async {
           if (formKey.currentState!.validate()) {
             formKey.currentState!.save();
             try {
-              var name = _controller.validateEmailPassword(_loginRequest);
+              //var name = _controller.validateEmailPassword(_loginRequest);
+              await _controller.validateEmailPassword(_loginRequest);
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) =>
-                      MainPage(name: name, email: _loginRequest.email),
+                  builder: (context) => MainPage(),
                 ),
               );
             } catch (e) {
